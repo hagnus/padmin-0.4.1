@@ -1,0 +1,72 @@
+<section data-ng-controller="TaxesController" data-ng-init="findAsync(pagingOptions.pageSize, pagingOptions.currentPage)">
+
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h3>Impostos</h3>
+            <div class="input-group">
+              <input type="text" class="form-control" ng-model="filterOptions.filterText" placeholder="Search for..."
+                     tooltip="Dica para realizar pesquisa">
+              <span class="input-group-btn">
+                <button class="btn btn-warning" type="button">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+                <a class="btn btn-warning" href="/#!/taxes/create">
+                    <i class="glyphicon glyphicon-plus" > Novo</i>
+                </a>                 
+              </span>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <table class="table table-hover table-bordered table-condensed table-responsive nopadding">
+                <thead data-ng-show="!taxes.$resolved || taxes.length">
+                    <tr class="primary" >
+                        <th class="col-md-6">
+                            <div class="pull-left"  data-ng-click="" >
+                                <i class="glyphicon glyphicon-search"></i>
+                            </div>                            
+                            <span>Nome</span>
+                        </th>
+                        <th class="col-md-2 hidden-xs">Tipo</th>
+                        <th class="col-md-2 ">Valor</th>
+                        <th class=""></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="tax in taxes | filter:filterOptions.filterText" >
+                        <td data-ng-bind="tax.name" ></td>
+                        <td class="hidden-xs" data-ng-bind="tax.type.name"></td>
+                        <td class="text-right" data-ng-bind="tax.value | currency: 'R$ '"></td>
+                        <td>
+                            <button class="btn btn-xs btn-danger"  data-ng-click="remove(tax);" >
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </button >
+                            <a class="btn btn-xs btn-primary" href="/#!/taxes/{{tax._id}}/edit" >
+                                <i class="glyphicon glyphicon-pencil"></i>
+                            </a>                        
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <nav class="navbar navbar-default panel-footer nopadding">
+                <div class="navbar-text">
+                    <pagination class="pagination-md  navbar-left nopadding" 
+                                total-items="totalServerItems" ng-model="pagingOptions.currentPage" 
+                                items-per-page="pagingOptions.pageSize" num-pages="smallnumPages" 
+                                next-text="Próx." previous-text="Ant.">
+                    </pagination>                            
+                </div>
+                <div class="nav navbar-nav dropdown hidden-xs">
+                    <select class="navbar-text form-control" 
+                            data-ng-options="psize for psize in pagingOptions.pageSizes" 
+                            data-ng-model="pagingOptions.pageSize">
+                    </select>                            
+                </div>
+                <div class="navbar-text hidden-xs">                           
+                    <p class="form-control">{{taxes.length}} de {{totalServerItems}}</p>
+                </div>
+            </nav>
+        </div>
+    </div>          
+</section>

@@ -1,0 +1,43 @@
+<section data-ng-controller="TaxesController" data-ng-init="findTypes()">
+    <div class="page-header">
+        <h1>Novo Imposto</h1>
+    </div>
+    <div class="col-md-12">
+        <form class="form-horizontal" data-ng-submit="create()" novalidate>
+            <fieldset>
+                <div class="form-group">
+                    <label class="control-label" for="name">Name</label>
+                    <div class="controls">
+                        <input type="text" data-ng-model="name" id="name" class="form-control" placeholder="Nome" required>
+                    </div>
+
+                    <label class="control-label" for="type">Tipo</label>
+                    <div class="controls">
+                        <select class="form-control" data-ng-options="o.name for o in types" id="type" required 
+                                data-ng-model="selectedType">
+                        </select>
+                    </div>
+
+                    <label class="control-label" for="value">Value</label>
+                    <div class="controls">
+                        <input type="text" ng-model="value" ng-bind="value" id="value" class="form-control" required>
+                    </div>
+
+                    <label class="control-label" for="description" >Descrição</label>
+                    <div class="controls">
+                        <textarea class="form-control" data-ng-model="description" id="description" placeholder="Descrição" 
+                                  cols="30" rows="5">
+                          
+                        </textarea>         
+                    </div>                    
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success">
+                </div>
+				<div data-ng-show="error" class="text-danger">
+					<strong data-ng-bind="error"></strong>
+				</div>
+            </fieldset>
+        </form>
+    </div>
+</section>
