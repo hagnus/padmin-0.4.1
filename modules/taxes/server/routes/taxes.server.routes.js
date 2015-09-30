@@ -1,9 +1,12 @@
 'use strict';
 
-module.exports = function(app) {
-	var taxes = require('../controllers/taxes.server.controller');
-	var taxesPolicy = require('../policies/taxes.server.policy');
+/**
+ * Module dependencies.
+ */
+var taxes = require('../controllers/taxes.server.controller');
+var taxesPolicy = require('../policies/taxes.server.policy');
 
+module.exports = function(app) {
 	// Taxes Routes
 	app.route('/api/taxes').all()
 		.get(taxes.list).all(taxesPolicy.isAllowed)
