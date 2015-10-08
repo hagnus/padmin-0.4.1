@@ -1,30 +1,11 @@
 'use strict';
 
-angular.module('taxes').directive('format', ['$filter', function ($filter) {
-    return {
-        require: '?ngModel',
-        link: function (scope, elem, attrs, ctrl) {
-            if (!ctrl) return;
-
-
-            ctrl.$formatters.unshift(function (a) {
-                return $filter(attrs.format)(ctrl.$modelValue);
-            });
-
-
-            ctrl.$parsers.unshift(function (viewValue) {
-                var plainNumber = viewValue.replace(/[^\d|\-+|\.+]/g, '');
-                elem.val($filter(attrs.format)(plainNumber));
-                return plainNumber;
-            });
-        }
-    };
-}]);
-
 // Taxes controller
 angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Taxes', 'TaxTypes',
 	function($scope, $stateParams, $location, Authentication, Taxes, TaxTypes ) {
-		$scope.authentication = Authentication;
+		$scope.authentication = Authentication;	
+
+		$scope.selectedType = {};
 
 	    $scope.pagingOptions = {
 	        pageSizes: [10, 25, 50],
@@ -32,12 +13,26 @@ angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams',
 	        currentPage: 1,
 	        maxSize: 5
 	    };
-		$scope.filterOptions = {
-	        filterText: '',
-	        useExternalFilter: false
-	    }; 
 
 	    $scope.totalServerItems = 0;
+
+		$scope.filterOptions = {
+	        filterText: '',
+	        name: '',
+	        value: '',
+	        type: '',
+	        useExternalFilter: false
+	    };
+
+	    $scope.clearFilter = function() {
+			$scope.filterOptions = {
+		        filterText: '',
+		        name: '',
+		        value: '',
+		        type: '',
+		        useExternalFilter: false
+		    };	    	
+	    };
 
 	    $scope.setPagingData = function(data, page, pageSize){	
 	        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
@@ -51,16 +46,25 @@ angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams',
 	        }
 	    };
 
-	    $scope.findAsync = function (pageSize, page, searchText) {
+	    $scope.findAsync = function (pageSize, page, searchObject) {
 	        setTimeout(function () {
 	            var data;
-	            if (searchText) {
-	                var ft = searchText.toLowerCase();
+	            if (searchObject) {
+	                var ftName  = searchObject.name.toLowerCase();
+	                var ftType  = searchObject.type.toLowerCase();
+	                var ftValue = searchObject.value.toLowerCase();
+	                var ftAll   = searchObject.filterText.toLowerCase();
 
 					Taxes.query().$promise.then(function (largeLoad) {		
 
 	                    data = largeLoad.filter(function(item) {
-	                        return JSON.stringify(item).toLowerCase().indexOf(ft) !== -1;
+	                    	var found = (JSON.stringify(item.name).toLowerCase().indexOf(ftName) !== -1 ) &&
+	                    				(JSON.stringify(item.type).toLowerCase().indexOf(ftType) !== -1 ) &&
+	                    				(JSON.stringify(item.value).toLowerCase().indexOf(ftValue) !== -1 ) &&
+	                    				((JSON.stringify(item.name).toLowerCase().indexOf(ftAll) !== -1 ) ||
+	                    				 (JSON.stringify(item.value).toLowerCase().indexOf(ftAll) !== -1 ) ||
+	                    				 (JSON.stringify(item.type).toLowerCase().indexOf(ftAll) !== -1 ));
+	                        return found;
 	                    });
 
 	                    $scope.setPagingData(data,page,pageSize);
@@ -77,13 +81,13 @@ angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams',
 	    $scope.$watch('pagingOptions', function (newVal, oldVal) {
 	        if (newVal !== oldVal && 
 	        	(newVal.currentPage !== oldVal.currentPage || newVal.pageSize !== oldVal.pageSize)) {
-	          $scope.findAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+	          $scope.findAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions);
 	        }
 	    }, true);
 
 	    $scope.$watch('filterOptions', function (newVal, oldVal) {
 	        if (newVal !== oldVal) {
-	          $scope.findAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+	          $scope.findAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions);
 	        }
 	    }, true);		
 
@@ -95,14 +99,13 @@ angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams',
 				type: $scope.selectedType._id,
 				value: $scope.value,
 				description: $scope.description	
-			});
+			});	
 
 			// Redirect after save
 			tax.$save(function(response) {
-				$location.path('taxes/' + response._id);
+				$location.path('taxes');
 
-				// Clear form fields
-				$scope.name = '';
+				clearFields();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -127,10 +130,11 @@ angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams',
 		// Update existing Tax
 		$scope.update = function() {
 			var tax = $scope.tax;
-			//tax.type = $scope.selectedType._id;
 
-			tax.$update(function() {
+			tax.$update(function(response) {
 				$location.path('taxes');
+				
+				clearFields();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -152,6 +156,18 @@ angular.module('taxes').controller('TaxesController', ['$scope', '$stateParams',
 
 	    $scope.findTypes = function() {
 	        $scope.types = TaxTypes.query();
-	    }; 		
+	    };
+
+	    $scope.cancel = function() {
+	        $location.path('taxes');
+	        clearFields();
+	    };
+
+	    var clearFields = function() {
+			$scope.name = '';
+			$scope.value = '';
+			$scope.description = '';
+			$scope.selectedType = {};
+	    };
 	}
 ]);

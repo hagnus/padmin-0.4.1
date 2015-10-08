@@ -1,74 +1,100 @@
 <section class="" data-ng-controller="TaxesController" 
          data-ng-init="findAsync(pagingOptions.pageSize, pagingOptions.currentPage)">
 
-        <div class="section-header">
-            <h3>Impostos</h3>
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="filterOptions.filterText" placeholder="Search for..."
-                     tooltip="Dica para realizar pesquisa">
-              <span class="input-group-btn">
-                <button class="btn btn-warning" type="button">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
-                <a class="btn btn-warning" href="/#!/taxes/create">
-                    <i class="glyphicon glyphicon-plus" > Novo</i>
-                </a>                 
-              </span>
+    <div class="container-fluid section-header">
+        <h3 class="col-xs-12 col-sm-4 nopadding">Impostos</h3>
+        <div class="col-xs-12 col-sm-8 input-group">
+          <input type="text" class="form-control input-sm" ng-model="filterOptions.filterText" placeholder="Busca por...">
+          <span class="input-group-btn">
+            <button class="btn btn-sm btn-warning" type="button">
+                <i class="glyphicon glyphicon-search"></i>
+            </button>               
+          </span>
+        </div>            
+    </div>
+
+    <div class="section-body">
+        <table class="table table-hover table-bordered table-condensed table-responsive">
+            <thead data-ng-show="!taxes.$resolved || taxes.length">
+                <tr class="" >
+                    <th class="default-background nopadding">
+                       <script type="text/ng-template" id="namePopover.html">
+                            <div class="form-group">
+                              <label>Busca pelo Nome</label>
+                              <input type="text" ng-model="filterOptions.name" class="form-control input-sm ">
+                            </div>
+                        </script>                        
+                        <i class="btn glyphicon glyphicon-search pull-right" popover-template="'namePopover.html'"></i>
+                        <span type="button" class="btn pull-left" type="button">Nome</span>
+                    </th>
+                    <th class="default-background hidden-xs nopadding">
+                        <script type="text/ng-template" id="typePopover.html">
+                            <div class="form-group">
+                              <label>Busca por Tipo</label>
+                              <input type="text" ng-model="filterOptions.type" class="form-control input-sm">
+                            </div>
+                        </script>
+                        <i class="btn glyphicon glyphicon-search pull-right" popover-template="'typePopover.html'"></i>
+                        <span type="button" class="btn pull-left" type="button">Tipo</span>
+                    </th>
+                    <th class="default-background nopadding">
+                        <script type="text/ng-template" id="valuePopover.html">
+                            <div class="form-group">
+                              <label>Busca por Valor</label>
+                              <input type="text" ng-model="filterOptions.value" class="form-control input-sm">
+                            </div>
+                        </script>
+                        
+                        <i class="btn glyphicon glyphicon-search pull-right" popover-template="'valuePopover.html'"></i>
+                        <span type="button" class="btn pull-left" type="button">Valor</span>
+                    </th>
+                    <th class="default-background control-colum">
+                        <a class="btn btn-xs btn-success" href="/#!/taxes/create">
+                            <i class="glyphicon glyphicon-plus" ></i>
+                        </a>
+                        <button class="btn btn-xs btn-warning"  data-ng-click="clearFilter();" >
+                            <i class="glyphicon glyphicon glyphicon-filter"></i>
+                        </button >                                                        
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="tax in taxes " >
+                    <td data-ng-bind="tax.name" ></td>
+                    <td class="hidden-xs" data-ng-bind="tax.type.name"></td>
+                    <td class="text-right" data-ng-bind="tax.value | currency: 'R$ '"></td>
+                    <td>
+                        <a class="btn btn-xs btn-primary" href="/#!/taxes/{{tax._id}}/edit" >
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>                        
+                        <button class="btn btn-xs btn-danger"  data-ng-click="remove(tax);" >
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </button >                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <nav class="navbar ">
+            <div class="navbar-text nospaces">
+                <pagination class="navbar-left nospaces" 
+                            total-items="totalServerItems" ng-model="pagingOptions.currentPage" 
+                            items-per-page="pagingOptions.pageSize" num-pages="smallnumPages" 
+                            next-text="Próx." previous-text="Ant.">
+                </pagination>                            
             </div>
-        </div>
 
-        <div class="section-body">
-            <table class="table table-hover table-bordered table-condensed table-responsive nospaces">
-                <thead data-ng-show="!taxes.$resolved || taxes.length">
-                    <tr class="" >
-                        <th class="col-md-6">
-                            <div class="pull-left"  data-ng-click="" >
-                                <i class="glyphicon glyphicon-search"></i>
-                            </div>                            
-                            <span>Nome</span>
-                        </th>
-                        <th class="col-md-2 hidden-xs">Tipo</th>
-                        <th class="col-md-2 ">Valor</th>
-                        <th class=""></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-ng-repeat="tax in taxes | filter:filterOptions.filterText" >
-                        <td data-ng-bind="tax.name" ></td>
-                        <td class="hidden-xs" data-ng-bind="tax.type.name"></td>
-                        <td class="text-right" data-ng-bind="tax.value | currency: 'R$ '"></td>
-                        <td>
-                            <button class="btn btn-xs btn-danger"  data-ng-click="remove(tax);" >
-                                <i class="glyphicon glyphicon-trash"></i>
-                            </button >
-                            <a class="btn btn-xs btn-primary" href="/#!/taxes/{{tax._id}}/edit" >
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </a>                        
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <nav class="navbar ">
-                <div class="navbar-text nospaces">
-                    <pagination class="navbar-left nospaces" 
-                                total-items="totalServerItems" ng-model="pagingOptions.currentPage" 
-                                items-per-page="pagingOptions.pageSize" num-pages="smallnumPages" 
-                                next-text="Próx." previous-text="Ant.">
-                    </pagination>                            
-                </div>
+            <div class="nav navbar-nav dropdown hidden-xs ">
+                <select class="navbar-text form-control nospaces" 
+                        data-ng-options="psize for psize in pagingOptions.pageSizes" 
+                        data-ng-model="pagingOptions.pageSize">
+                </select>                            
+            </div>
 
-                <div class="nav navbar-nav dropdown hidden-xs ">
-                    <select class="navbar-text form-control nospaces" 
-                            data-ng-options="psize for psize in pagingOptions.pageSizes" 
-                            data-ng-model="pagingOptions.pageSize">
-                    </select>                            
-                </div>
+            <div class="navbar-text hidden-xs pull-right nospaces">                           
+                <p class="form-control-static">{{totalServerItems}} registros encontrados ({{taxes.length}} visualizados)</p>
+            </div>
 
-                <div class="navbar-text hidden-xs pull-right nospaces">                           
-                    <p class="form-control-static">{{totalServerItems}} registros encontrados ({{taxes.length}} visualizados)</p>
-                </div>
-
-            </nav>
-        </div>         
+        </nav>
+    </div>         
 </section>

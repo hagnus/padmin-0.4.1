@@ -18,7 +18,7 @@ var TaxSchema = new Schema({
 		type: String,
 		default: '',
 		trim: true,
-		required: 'O nome deve ser preenchido'
+		required: 'O nome do imposto deve ser preenchido'
 	},
 	description: {
 		type: String,
@@ -27,12 +27,12 @@ var TaxSchema = new Schema({
 	},
 	value: {
 		type: Number,
-		default: 0,
-		required: 'O valor do imposto deve ser preenchido' 
+		required: 'O valor do imposto deve ser informado' 
 	},
 	type: {
 		type: Schema.ObjectId,
-		ref: 'modTaxType'
+		ref: 'modTaxType',
+		required: 'Selecione o tipo do imposto' 
 	},	
 	user: {
 		type: Schema.ObjectId,

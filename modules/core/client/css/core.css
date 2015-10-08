@@ -3,6 +3,41 @@ body {
   color: #8a6d3b;
 }
 
+table {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+th {
+  border-color: #D0A78E;
+}
+
+th > i {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+th > span {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+.control-colum {
+  width: 65px;
+}
+
+.default-background {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f7f2a9+0,fed696+100 */
+  background: #f7f2a9; /* Old browsers */
+  background: -moz-linear-gradient(top,  #f7f2a9 0%, #fed696 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f2a9), color-stop(100%,#fed696)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #f7f2a9 0%,#fed696 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #f7f2a9 0%,#fed696 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #f7f2a9 0%,#fed696 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #f7f2a9 0%,#fed696 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f2a9', endColorstr='#fed696',GradientType=0 ); /* IE6-9 */  
+}
+
 .section-header {
   padding: 15px;
   border-bottom: 1px solid;
@@ -21,7 +56,7 @@ body {
   border-bottom-right-radius: 20px;
 }
 
-.section-header > h3 {
+.section-header > h3 { 
   margin-top: 5px;
   margin-bottom: 5px;
 }
@@ -52,6 +87,11 @@ body {
   padding: 0 !important;
 }
 
+.nopadding-horiz {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 .nospaces {
   padding: 0 !important;
   margin: 0 !important;
@@ -59,6 +99,10 @@ body {
 
 .nomargin {
   margin: 0 !important;
+}
+
+.popover-content {
+    padding: 5px 5px;
 }
 
 .content {
