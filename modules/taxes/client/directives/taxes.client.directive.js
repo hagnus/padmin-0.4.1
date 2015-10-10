@@ -19,11 +19,11 @@ angular.module('taxes')
                 var fract = (typeof scope.fraction !== 'undefined')?scope.fraction:2;
 
                 function decimalRex(dChar) {
-                    return RegExp("\\d|\\-|\\" + dChar, 'g');
+                    return new RegExp("\\d|\\-|\\" + dChar, 'g');
                 }
 
                 function clearRex(dChar) {
-                    return RegExp("\\-{0,1}((\\" + dChar + ")|([0-9]{1,}\\" + dChar + "?))&?[0-9]{0," + fract + "}", 'g');
+                    return new RegExp("\\-{0,1}((\\" + dChar + ")|([0-9]{1,}\\" + dChar + "?))&?[0-9]{0," + fract + "}", 'g');
                 }
 
                 function clearValue(value) {
@@ -37,7 +37,7 @@ angular.module('taxes')
                     var neg_str = neg_dummy.substring(0,neg_idx);
                     value = value.replace(neg_str, "-");
 
-                    if(RegExp("^-[\\s]*$", 'g').test(value)) {
+                    if(new RegExp("^-[\\s]*$", 'g').test(value)) {
                         value = "-0";
                     }
 
@@ -76,7 +76,7 @@ angular.module('taxes')
                     var cVal = clearValue(viewValue);
                     //return parseFloat(cVal);
                     // Check for fast digitation (-. or .)
-                    if(cVal == "." || cVal == "-.")
+                    if(cVal === "." || cVal === "-.")
                     {
                         cVal = ".0";
                     }
@@ -129,7 +129,7 @@ angular.module('taxes')
                     return true;
                 };
             }
-        }
+        };
     }]);
 
 // .directive('money', function () {
